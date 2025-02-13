@@ -52,7 +52,7 @@ export default function Page() {
         audioRef.current.pause()
       }
     }
-  }, [yesPressed]);
+  }, [yesPressed, onMusic]);
 
   return (
     <div className="overflow-hidden flex flex-col items-center justify-center pt-4 h-screen -mt-16 selection:bg-rose-600 selection:text-white text-zinc-900">
