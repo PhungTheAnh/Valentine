@@ -1,10 +1,12 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import lovesvg from "./assets/All You Need Is Love SVG Cut File.svg";
 import lovesvg2 from "./assets/Love In The Air SVG Cut File.svg";
-
+import mp3 from "./assets/mai-mai-ben-nhau.mp3"
 export default function Page() {
   const [noCount, setNoCount] = useState(0);
   const [yesPressed, setYesPressed] = useState(false);
+   const audioRef = useRef(null);
+  const [openMusic, setOpenMusic] = useState(true)
   const yesButtonSize = noCount * 20 + 16;
 
   const handleNoClick = () => {
@@ -36,6 +38,16 @@ export default function Page() {
 
     return phrases[Math.min(noCount, phrases.length - 1)];
   };
+
+  
+ 
+  useEffect(() => {
+    if (audioRef.current) {
+      audioRef.current.play().catch(error => {
+        console.error('Failed to play the audio:', error);
+      });
+    }
+  }, []);
 
   return (
     <div className="overflow-hidden flex flex-col items-center justify-center pt-4 h-screen -mt-16 selection:bg-rose-600 selection:text-white text-zinc-900">
@@ -80,22 +92,38 @@ export default function Page() {
           </div>
         </>
       )}
-      <Footer />
+      {/* music */}
+       <audio controls autoPlay >
+        <source src={mp3} type="audio/mpeg" />
+      </audio>
+      <Footer openMusic={openMusic} setOpenMusic={setOpenMusic} />
     </div>
   );
 }
 
-const Footer = () => {
+// eslint-disable-next-line react/prop-types
+const Footer = ({ openMusic, setOpenMusic }) => {
+   const handleMusic = () => {
+    setOpenMusic(!openMusic)
+  }
   return (
-    <a
-      className="cursor-pointer fixed bottom-2 right-2 backdrop-blur-md opacity-80 hover:opacity-95 border p-1 rounded border-rose-300"
-      // href="https://github.com/Xeven777/valentine"
-      // target="__blank"
-    >
-      Made with{" "}
-      <span role="img" aria-label="heart">
-        ❤️
-      </span>
-    </a>
+    <div>
+     
+      <div onClick={handleMusic} className="music-control" id="musicControl" title="Toggle music">
+        <svg className="music-icon" viewBox="0 0 24 24" id="musicIcon">
+          {
+            openMusic ? <path d="M12 3v10.55c-.59-.34-1.27-.55-2-.55-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4V7h4V3h-6z"></path> : <path d="M4.27 3L3 4.27l9 9v.28c-.59-.34-1.27-.55-2-.55-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4v-1.73L19.73 21 21 19.73 4.27 3zM14 7h4V3h-6v5.18l2 2z"></path>
+          }
+        </svg>
+    </div>
+      <a
+        className="cursor-pointer fixed bottom-2 right-2 backdrop-blur-md opacity-80 hover:opacity-95 border p-1 rounded border-rose-300"
+      >
+        Made with{" "}
+        <span role="img" aria-label="heart">
+          ❤️
+        </span>
+      </a>
+    </div>
   );
 };
